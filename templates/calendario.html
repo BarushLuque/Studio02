@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservar Cita | Studio 02</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Italianno&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+    <header class="navbar">
+        <nav>
+            <a href="{{ url_for('index') }}">Inicio</a>
+            <a href="{{ url_for('servicios') }}">Servicios</a>
+            <a href="#">Contacto</a>
+        </nav>
+    </header>
+
+    <div class="services-header">
+        <h1>Reserva tu Espacio</h1>
+        <p>Selecciona el día y la hora que mejor te convenga</p>
+    </div>
+
+    <main class="container">
+        <div class="layout-split">
+            
+            <div class="booking-card">
+                <h2 class="section-title" style="font-size: 3rem; margin-bottom: 1rem;">Confirmar Cita</h2>
+                
+                <form id="appointment-form" action="/guardar_cita" method="POST">
+                    <div class="form-group">
+                        <label>Fecha y Hora:</label>
+                        <input type="text" id="selected-date" name="fecha_hora" readonly placeholder="Selecciona un horario 👉">
+                    </div>
+                    <div class="form-group">
+                        <label>Tu Nombre:</label>
+                        <input type="text" name="nombre" required placeholder="Ej. Ana García">
+                    </div>
+                    <div class="form-group">
+                        <label>Servicio:</label>
+                        <select name="servicio" required>
+                            <option value="">Selecciona un servicio</option>
+                            <optgroup label="Mujeres">
+                                <option value="corte-mujer">Corte y Estilo</option>
+                                <option value="color-mujer">Colorimetría</option>
+                                <option value="unas-mujer">Manicura Spa</option>
+                            </optgroup>
+                            <optgroup label="Hombres">
+                                <option value="corte-hombre">Corte Clásico / Fade</option>
+                                <option value="barba-hombre">Diseño de Barba</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-agendar" style="width: 100%;">Confirmar Reserva</button>
+                </form>
+            </div>
+
+            <div id="calendar-container">
+                <div id="calendar"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Studio 02. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <script src="{{ url_for('static', filename='js/calendario.js') }}"></script>
+</body>
+</html>

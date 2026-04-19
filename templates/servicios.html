@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios | Studio 02</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Italianno&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+    <header class="navbar">
+        <nav>
+            <a href="#">Contacto</a>
+            <a href="{{ url_for('servicios') }}">Servicios</a>
+            <a href="#">Acerca de mi</a>
+        </nav>
+    </header>
+
+    <div class="services-header">
+        <h1>Nuestros Servicios</h1>
+        <p>Encuentra el estilo perfecto para ti y agenda tu cita hoy mismo</p>
+    </div>
+
+    <main class="container">
+        
+        <section id="mujeres">
+            <h2 class="section-title">Servicios para Mujer</h2>
+            <div class="services-grid">
+                
+                <article class="service-card">
+                    <div class="service-image-square">
+                        <img src="{{ url_for('static', filename='img/corte-dama.svg') }}" alt="Corte y Estilo Mujer" class="card-img-square">
+                    </div>
+                    <h3 class="service-title">Corte y Estilo</h3>
+                    <p class="service-desc">Corte de cabello personalizado según la forma de tu rostro, incluye lavado y secado.</p>
+                    <div class="service-price">Desde $450</div>
+                    <a href="#" class="btn-agendar">Agendar Cita</a>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-image-square">
+                        <img src="{{ url_for('static', filename='img/colorimetria.png') }}" alt="Colorimetría Mujer" class="card-img-square">
+                    </div>
+                    <h3 class="service-title">Colorimetría</h3>
+                    <p class="service-desc">Técnicas modernas de coloración, luces, retoque de raíz o cambios de look completos.</p>
+                    <div class="service-price">Desde $1,200</div>
+                    <a href="#" class="btn-agendar">Agendar Cita</a>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-image-square">
+                        <img src="{{ url_for('static', filename='img/mujer-unas.jpg') }}" alt="Manicura Mujer" class="card-img-square">
+                    </div>
+                    <h3 class="service-title">Manicura</h3>
+                    <p class="service-desc">Cuidado completo para tus manos, incluye esmaltado semipermanente.</p>
+                    <div class="service-price">Desde $350</div>
+                    <a href="#" class="btn-agendar">Agendar Cita</a>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-image-square">
+                        <img src="{{ url_for('static', filename='img/mujer-tratamiento.jpg') }}" alt="Tratamiento Capilar" class="card-img-square">
+                    </div>
+                    <h3 class="service-title">Tratamiento Capilar</h3>
+                    <p class="service-desc">Hidratación profunda, botox capilar o queratina para devolverle el brillo a tu cabello.</p>
+                    <div class="service-price">Desde $800</div>
+                    <a href="#" class="btn-agendar">Agendar Cita</a>
+                </article>
+
+            </div>
+        </section>
+
+        <section id="hombres">
+            <h2 class="section-title">Servicios para Hombre</h2>
+            <div class="services-grid">
+                
+                <article class="service-card">
+                    <div class="service-icon">
+                        <img src="{{ url_for('static', filename='img/hombre-corte.jpg') }}" alt="Corte Hombre">
+                    </div>
+                    <h3 class="service-title">Corte Clásico / Fade</h3>
+                    <p class="service-desc">Corte a máquina o tijera, degradados perfectos. Incluye lavado y peinado.</p>
+                    <div class="service-price">Desde $250</div>
+                    <a href="#" class="btn-agendar">Agendar Cita</a>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-icon">
+                        <img src="{{ url_for('static', filename='img/hombre-barba.jpg') }}" alt="Diseño de Barba Hombre">
+                    </div>
+                    <h3 class="service-title">Diseño de Barba</h3>
+                    <p class="service-desc">Perfilado, recorte y ritual de toalla caliente para un afeitado impecable.</p>
+                    <div class="service-price">Desde $200</div>
+                    <a href="#" class="btn-agendar">Agendar Cita</a>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-icon">
+                        <img src="{{ url_for('static', filename='img/hombre-facial.jpg') }}" alt="Limpieza Facial Hombre">
+                    </div>
+                    <h3 class="service-title">Limpieza Facial Express</h3>
+                    <p class="service-desc">Exfoliación, extracción de puntos negros e hidratación rápida para cuidar tu piel.</p>
+                    <div class="service-price">Desde $300</div>
+                    <a href="#" class="btn-agendar">Agendar Cita</a>
+                </article>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Studio 02. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>

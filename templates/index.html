@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Studio 02</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Italianno&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+<header class="navbar">
+    <nav>
+        <a href="#">Contacto</a>
+        <a href="#">Servicios</a>
+        <a href="#">Acerca de mi</a>
+    </nav>
+</header>
+
+<section class="hero">
+
+    <img 
+  src="{{ url_for('static', filename='img/studio02.svg') }}" 
+  alt="Studio 02" 
+  class="logo-img">
+
+    <p class="tagline">El arte de resaltar lo mejor de ti.</p>
+
+    <button class="cta">Agendar Cita</button>
+
+</section>
+
+</body>
+</html>

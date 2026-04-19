@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="699.967" height="182.032" viewBox="0 0 696 181">
+  <defs>
+    <style>
+      .cls-1 {
+        font-size: 300px;
+      }
+
+      .cls-1, .cls-2 {
+        fill: #fff;
+        text-anchor: middle;
+        font-family: Italianno;
+      }
+
+      .cls-2 {
+        font-size: 225px;
+      }
+    </style>
+  </defs>
+  <text id="S" class="cls-1" x="61.75" y="168.25"><tspan x="61.75">S</tspan></text>
+  <text id="tudio" class="cls-2" x="287.75" y="178.25"><tspan x="287.75">tudio</tspan></text>
+  <text id="_02" data-name="02" class="cls-1" x="569.5" y="178.5"><tspan x="569.5">02</tspan></text>
+</svg>
