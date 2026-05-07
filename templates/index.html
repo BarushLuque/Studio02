@@ -2,35 +2,124 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Studio 02</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Italianno&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/js/service-worker.js');
+        }
+    </script>
+    
 </head>
 <body>
 
-<header class="navbar">
-    <nav>
-        <a href="#">Contacto</a>
-        <a href="#">Servicios</a>
-        <a href="#">Acerca de mi</a>
-    </nav>
-</header>
+<!-- NAVBAR -->
+<nav class="nav">
+    <a href="{{ url_for('index') }}" class="nav-brand">Studio 02</a>
+    <ul class="nav-links">
+        <li><a href="{{ url_for('index') }}">Inicio</a></li>
+        <li><a href="{{ url_for('servicios') }}">Servicios</a></li>
+        <li><a href="{{ url_for('calendario') }}">Agendar</a></li>
+        <li><a href="{{ url_for('historial') }}">Admin</a></li>
+    </ul>
+    <a href="{{ url_for('calendario') }}" class="nav-cta">Reservar Cita</a>
+</nav>
 
+<!-- HERO -->
 <section class="hero">
-
-    <img 
-  src="{{ url_for('static', filename='img/studio02.svg') }}" 
-  alt="Studio 02" 
-  class="logo-img">
-
-    <p class="tagline">El arte de resaltar lo mejor de ti.</p>
-
-    <button class="cta">Agendar Cita</button>
-
+    <div class="hero-text">
+        <p class="hero-eyebrow">Estética Boutique · Guaymas</p>
+        <h1 class="hero-title">
+            Rituales de belleza<br>
+            hechos <em>a tu medida.</em>
+        </h1>
+        <p class="hero-body">
+            Una sola profesional, toda su atención. Agenda, recibe recordatorios y
+            vive un momento pensado para ti — sin prisas, sin distracciones.
+        </p>
+        <div class="hero-actions">
+            <a href="{{ url_for('calendario') }}" class="btn-primary">Agendar Cita →</a>
+            <a href="{{ url_for('servicios') }}" class="btn-ghost">Ver Servicios</a>
+        </div>
+    </div>
+    <div class="hero-image">
+        <img src="{{ url_for('static', filename='img/hero.jpg') }}" alt="Studio 02 interior">
+    </div>
 </section>
+
+<!-- SERVICIOS DESTACADOS -->
+<section class="section">
+    <div class="section-eyebrow">Servicios Destacados</div>
+    <div class="section-header">
+        <h2 class="section-title">Lo esencial del studio.</h2>
+        <a href="{{ url_for('servicios') }}" class="section-link">Ver Catálogo →</a>
+    </div>
+    <div class="services-grid">
+        <a href="{{ url_for('servicios') }}" class="service-tile">
+            <img src="{{ url_for('static', filename='img/hombre-facial.jpg') }}" alt="Facial">
+            <div class="service-tile-label">
+                <span class="service-tile-eyebrow">Cuidado de piel</span>
+                <span class="service-tile-name">Facial</span>
+            </div>
+        </a>
+        <a href="{{ url_for('servicios') }}" class="service-tile">
+            <img src="{{ url_for('static', filename='img/corte-dama.svg') }}" alt="Cabello">
+            <div class="service-tile-label">
+                <span class="service-tile-eyebrow">Corte y color</span>
+                <span class="service-tile-name">Cabello</span>
+            </div>
+        </a>
+        <a href="{{ url_for('servicios') }}" class="service-tile">
+            <img src="{{ url_for('static', filename='img/mujer-unas.jpg') }}" alt="Manicura">
+            <div class="service-tile-label">
+                <span class="service-tile-eyebrow">Manos y uñas</span>
+                <span class="service-tile-name">Manicura</span>
+            </div>
+        </a>
+        <a href="{{ url_for('servicios') }}" class="service-tile">
+            <img src="{{ url_for('static', filename='img/colorimetria.png') }}" alt="Maquillaje">
+            <div class="service-tile-label">
+                <span class="service-tile-eyebrow">Expresión</span>
+                <span class="service-tile-name">Maquillaje</span>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- SOBRE EL STUDIO -->
+<section class="about">
+    <div class="about-image">
+        <img src="{{ url_for('static', filename='img/mujer-tratamiento.jpg') }}" alt="Sobre el Studio">
+    </div>
+    <div class="about-text">
+        <p class="section-eyebrow">Sobre el Studio</p>
+        <h2 class="about-title">Un espacio íntimo,<br>pensado para ti.</h2>
+        <p class="about-body">
+            Studio 02 nace de la idea de que la belleza no necesita multitudes. Aquí
+            atiendo una cita a la vez, con tiempo suficiente para cada detalle. Desde el
+            corte más clásico hasta tratamientos faciales de autor — cada servicio se
+            realiza con productos seleccionados y con toda la intención puesta en ti.
+        </p>
+        <a href="{{ url_for('calendario') }}" class="btn-outline">Reservar mi Cita</a>
+    </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-banner">
+    <p class="cta-eyebrow">Reserva</p>
+    <h2 class="cta-title">El tiempo dedicado a ti misma nunca será perdido.</h2>
+    <a href="{{ url_for('calendario') }}" class="btn-primary">Agendar Ahora →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>&copy; 2026 Studio 02. Todos los derechos reservados.</p>
+    <p>Guaymas, Sonora</p>
+</footer>
 
 </body>
 </html>

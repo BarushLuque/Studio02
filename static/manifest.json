@@ -1,0 +1,18 @@
+{
+    "short_name": "Studio02",
+    "name": "Studio02 - El arte de resaltar lo mejor de ti",
+    "icons": [
+        {
+            "src": "/static/img/studio02.png",
+            "type": "image/png",
+            "sizes": "144x144"
+        }
+    ],
+    "start_url": "/index.html",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff",
+    "orientation": "portrait",
+    "categories": ["fashion", "beauty", "lifestyle"],
+    "description": "Studio02 es un espacio dedicado a resaltar lo mejor de ti"
+}

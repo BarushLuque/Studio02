@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/js/service-worker.js')
+                .then(() => console.log('Service Worker registrado con éxito'));
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservar Cita | Studio 02</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Italianno&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
@@ -15,7 +21,7 @@
         <nav>
             <a href="{{ url_for('index') }}">Inicio</a>
             <a href="{{ url_for('servicios') }}">Servicios</a>
-            <a href="#">Contacto</a>
+            <a href="{{ url_for('historial') }}">Historial</a>
         </nav>
     </header>
 
@@ -24,40 +30,80 @@
         <p>Selecciona el día y la hora que mejor te convenga</p>
     </div>
 
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container" style="margin-top: 1rem;">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
     <main class="container">
         <div class="layout-split">
-            
+
+            <!-- Formulario de cita -->
             <div class="booking-card">
                 <h2 class="section-title" style="font-size: 3rem; margin-bottom: 1rem;">Confirmar Cita</h2>
-                
-                <form id="appointment-form" action="/guardar_cita" method="POST">
+
+                <form id="appointment-form" action="{{ url_for('guardar_cita') }}" method="POST">
+
+                    <!-- Cliente -->
                     <div class="form-group">
-                        <label>Fecha y Hora:</label>
-                        <input type="text" id="selected-date" name="fecha_hora" readonly placeholder="Selecciona un horario 👉">
-                    </div>
-                    <div class="form-group">
-                        <label>Tu Nombre:</label>
-                        <input type="text" name="nombre" required placeholder="Ej. Ana García">
-                    </div>
-                    <div class="form-group">
-                        <label>Servicio:</label>
-                        <select name="servicio" required>
-                            <option value="">Selecciona un servicio</option>
-                            <optgroup label="Mujeres">
-                                <option value="corte-mujer">Corte y Estilo</option>
-                                <option value="color-mujer">Colorimetría</option>
-                                <option value="unas-mujer">Manicura Spa</option>
-                            </optgroup>
-                            <optgroup label="Hombres">
-                                <option value="corte-hombre">Corte Clásico / Fade</option>
-                                <option value="barba-hombre">Diseño de Barba</option>
-                            </optgroup>
+                        <label for="id_cliente">Cliente:</label>
+                        <select id="id_cliente" name="id_cliente" required>
+                            <option value="">Selecciona un cliente</option>
+                            {% for cliente in clientes %}
+                                <option value="{{ cliente.id_cliente }}">
+                                    {{ cliente.nombre }} {{ cliente.apellido }}
+                                    {% if cliente.telefono %} — {{ cliente.telefono }}{% endif %}
+                                </option>
+                            {% endfor %}
                         </select>
                     </div>
+
+                    <!-- Fecha inicio -->
+                    <div class="form-group">
+                        <label for="fecha_inicio">Fecha y hora de inicio:</label>
+                        <input type="datetime-local" id="fecha_inicio" name="fecha_inicio" required>
+                    </div>
+
+                    <!-- Fecha fin -->
+                    <div class="form-group">
+                        <label for="fecha_fin">Fecha y hora de fin:</label>
+                        <input type="datetime-local" id="fecha_fin" name="fecha_fin" required>
+                    </div>
+
+                    <!-- Servicios agrupados por categoría -->
+                    <div class="form-group">
+                        <label>Servicios:</label>
+                        {% for categoria in categorias %}
+                            <p style="font-weight: 600; margin: 0.5rem 0 0.2rem;">{{ categoria.nombre_categoria }}</p>
+                            {% for servicio in servicios %}
+                                {% if servicio.id_categoria == categoria.id_categoria %}
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="servicios" value="{{ servicio.id_servicio }}">
+                                        {{ servicio.nombre_servicio }}
+                                        <span class="precio-tag">${{ "%.0f"|format(servicio.precio) }}</span>
+                                    </label>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+
+                    <!-- Notas -->
+                    <div class="form-group">
+                        <label for="notas">Notas (opcional):</label>
+                        <textarea id="notas" name="notas" rows="2" placeholder="Indicaciones especiales..."></textarea>
+                    </div>
+
                     <button type="submit" class="btn-agendar" style="width: 100%;">Confirmar Reserva</button>
                 </form>
             </div>
 
+            <!-- Calendario visual -->
             <div id="calendar-container">
                 <div id="calendar"></div>
             </div>
@@ -70,6 +116,35 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
-    <script src="{{ url_for('static', filename='js/calendario.js') }}"></script>
+    <script>
+        // Sincroniza el calendario con el input fecha_inicio
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                locale: 'es',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                slotMinTime: '08:00:00',
+                slotMaxTime: '20:00:00',
+                allDaySlot: false,
+                selectable: true,
+                select: function (info) {
+                    // Al seleccionar un rango en el calendario, llena los inputs automáticamente
+                    var toLocal = function(date) {
+                        var off = date.getTimezoneOffset();
+                        var local = new Date(date.getTime() - off * 60000);
+                        return local.toISOString().slice(0, 16);
+                    };
+                    document.getElementById('fecha_inicio').value = toLocal(info.start);
+                    document.getElementById('fecha_fin').value   = toLocal(info.end);
+                }
+            });
+            calendar.render();
+        });
+    </script>
 </body>
 </html>

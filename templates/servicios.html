@@ -4,117 +4,420 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Servicios | Studio 02</title>
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/js/service-worker.js');
+        }
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <link href="https://fonts.googleapis.com/css2?family=Italianno&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+        :root {
+            --cream: #F5F2ED;
+            --ink:   #1A1814;
+            --warm:  #C4A882;
+            --muted: #8C8880;
+            --line:  rgba(26,24,20,0.12);
+            --serif: 'Cormorant Garamond', Georgia, serif;
+            --sans:  'Jost', sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--cream);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-weight: 300;
+            overflow-x: hidden;
+        }
+
+        /* ── NAVBAR ── */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1.25rem 2.5rem;
+            background: rgba(245,242,237,0.92);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--line);
+        }
+        .nav-brand {
+            font-family: var(--serif);
+            font-size: 1.15rem;
+            font-weight: 400;
+            letter-spacing: 0.03em;
+            text-decoration: none;
+            color: var(--ink);
+        }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+        .nav-links a {
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--ink);
+            transition: color 0.2s;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--warm); }
+        .nav-cta {
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--cream);
+            background: var(--ink);
+            padding: 0.65rem 1.4rem;
+            transition: background 0.25s;
+        }
+        .nav-cta:hover { background: var(--warm); }
+
+        /* ── PAGE HEADER ── */
+        .page-header {
+            padding: 8rem 2.5rem 3rem;
+            border-bottom: 1px solid var(--line);
+        }
+        .page-eyebrow {
+            font-size: 0.6rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+        .page-header-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+        .page-title {
+            font-family: var(--serif);
+            font-size: clamp(2.4rem, 4vw, 3.6rem);
+            font-weight: 300;
+            line-height: 1.08;
+        }
+        .page-title em { font-style: italic; color: var(--warm); }
+        .page-desc {
+            font-size: 0.85rem;
+            line-height: 1.8;
+            color: var(--muted);
+            padding-top: 0.5rem;
+        }
+
+        /* ── FILTER TABS ── */
+        .filter-bar {
+            padding: 1.5rem 2.5rem;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            background: var(--cream);
+            position: sticky;
+            top: 64px;
+            z-index: 50;
+        }
+        .filter-btn {
+            font-family: var(--sans);
+            font-size: 0.62rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            border: 1px solid var(--line);
+            background: transparent;
+            color: var(--muted);
+            padding: 0.45rem 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover { border-color: var(--ink); color: var(--ink); }
+        .filter-btn.active {
+            background: var(--ink);
+            border-color: var(--ink);
+            color: var(--cream);
+        }
+
+        /* ── CATEGORY BLOCKS ── */
+        .catalog { padding: 0 2.5rem 6rem; }
+
+        .category-block {
+            padding: 4rem 0;
+            border-bottom: 1px solid var(--line);
+        }
+        .category-block:last-child { border-bottom: none; }
+
+        .category-layout {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        /* Image + number + name stacked */
+        .category-media { position: relative; }
+        .category-img {
+            width: 160px;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+            filter: grayscale(10%);
+        }
+        .category-num {
+            font-size: 0.6rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            color: var(--muted);
+            margin-top: 0.75rem;
+            display: block;
+        }
+        .category-name {
+            font-family: var(--serif);
+            font-size: 1.8rem;
+            font-weight: 300;
+            line-height: 1;
+            margin-top: 0.2rem;
+        }
+
+        /* Service rows */
+        .service-list { padding-top: 0.5rem; }
+        .service-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 1.1rem 0;
+            border-bottom: 1px solid var(--line);
+            gap: 2rem;
+        }
+        .service-row:first-child { border-top: 1px solid var(--line); }
+        .service-info { flex: 1; }
+        .service-name {
+            font-size: 0.92rem;
+            font-weight: 400;
+            color: var(--ink);
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        .service-duration {
+            font-size: 0.72rem;
+            color: var(--muted);
+            letter-spacing: 0.03em;
+        }
+        .service-price {
+            font-family: var(--serif);
+            font-size: 1.1rem;
+            font-weight: 400;
+            white-space: nowrap;
+            color: var(--ink);
+        }
+
+        /* ── CTA ── */
+        .cta-section {
+            text-align: center;
+            padding: 4rem 2.5rem 6rem;
+        }
+        .btn-primary {
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--cream);
+            background: var(--ink);
+            padding: 0.9rem 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.25s;
+        }
+        .btn-primary:hover { background: var(--warm); }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--cream);
+            border-top: 1px solid var(--line);
+            padding: 3rem 2.5rem 2rem;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            gap: 2rem;
+        }
+        .footer-brand {
+            font-family: var(--serif);
+            font-size: 1.3rem;
+            font-weight: 300;
+            margin-bottom: 0.75rem;
+        }
+        .footer-desc {
+            font-size: 0.78rem;
+            line-height: 1.7;
+            color: var(--muted);
+            max-width: 28ch;
+        }
+        .footer-col-title {
+            font-size: 0.6rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
+        }
+        .footer-col p {
+            font-size: 0.78rem;
+            line-height: 1.7;
+            color: var(--ink);
+        }
+        .footer-bottom {
+            padding: 1.5rem 2.5rem;
+            border-top: 1px solid var(--line);
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 700px) {
+            .page-header-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .category-layout { grid-template-columns: 1fr; }
+            .category-img { width: 100%; height: 220px; }
+            .nav-links { display: none; }
+            footer { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
 
-    <header class="navbar">
-        <nav>
-            <a href="#">Contacto</a>
-            <a href="{{ url_for('servicios') }}">Servicios</a>
-            <a href="#">Acerca de mi</a>
-        </nav>
-    </header>
+<!-- NAVBAR -->
+<nav class="nav">
+    <a href="{{ url_for('index') }}" class="nav-brand">Studio 02</a>
+    <ul class="nav-links">
+        <li><a href="{{ url_for('index') }}">Inicio</a></li>
+        <li><a href="{{ url_for('servicios') }}" class="active">Servicios</a></li>
+        <li><a href="{{ url_for('calendario') }}">Agendar</a></li>
+        <li><a href="{{ url_for('historial') }}">Admin</a></li>
+    </ul>
+    <a href="{{ url_for('calendario') }}" class="nav-cta">Reservar Cita</a>
+</nav>
 
-    <div class="services-header">
-        <h1>Nuestros Servicios</h1>
-        <p>Encuentra el estilo perfecto para ti y agenda tu cita hoy mismo</p>
+<!-- PAGE HEADER -->
+<header class="page-header">
+    <p class="page-eyebrow">Catálogo</p>
+    <div class="page-header-grid">
+        <h1 class="page-title">
+            Cada servicio,<br>
+            un <em>ritual completo.</em>
+        </h1>
+        <p class="page-desc">
+            Los precios mostrados son referenciales. La duración incluye la
+            consulta inicial y retoques finales. Algunos servicios admiten
+            combinaciones — házmelo saber al agendar.
+        </p>
     </div>
+</header>
 
-    <main class="container">
-        
-        <section id="mujeres">
-            <h2 class="section-title">Servicios para Mujer</h2>
-            <div class="services-grid">
-                
-                <article class="service-card">
-                    <div class="service-image-square">
-                        <img src="{{ url_for('static', filename='img/corte-dama.svg') }}" alt="Corte y Estilo Mujer" class="card-img-square">
-                    </div>
-                    <h3 class="service-title">Corte y Estilo</h3>
-                    <p class="service-desc">Corte de cabello personalizado según la forma de tu rostro, incluye lavado y secado.</p>
-                    <div class="service-price">Desde $450</div>
-                    <a href="#" class="btn-agendar">Agendar Cita</a>
-                </article>
+<!-- FILTER TABS -->
+<div class="filter-bar">
+    <button class="filter-btn active" onclick="filterCat('all', this)">Todo</button>
+    {% for cat in categorias %}
+        <button class="filter-btn" onclick="filterCat('cat-{{ cat.id_categoria }}', this)">
+            {{ cat.nombre_categoria }}
+        </button>
+    {% endfor %}
+</div>
 
-                <article class="service-card">
-                    <div class="service-image-square">
-                        <img src="{{ url_for('static', filename='img/colorimetria.png') }}" alt="Colorimetría Mujer" class="card-img-square">
-                    </div>
-                    <h3 class="service-title">Colorimetría</h3>
-                    <p class="service-desc">Técnicas modernas de coloración, luces, retoque de raíz o cambios de look completos.</p>
-                    <div class="service-price">Desde $1,200</div>
-                    <a href="#" class="btn-agendar">Agendar Cita</a>
-                </article>
+<!-- CATALOG -->
+<main class="catalog">
 
-                <article class="service-card">
-                    <div class="service-image-square">
-                        <img src="{{ url_for('static', filename='img/mujer-unas.jpg') }}" alt="Manicura Mujer" class="card-img-square">
-                    </div>
-                    <h3 class="service-title">Manicura</h3>
-                    <p class="service-desc">Cuidado completo para tus manos, incluye esmaltado semipermanente.</p>
-                    <div class="service-price">Desde $350</div>
-                    <a href="#" class="btn-agendar">Agendar Cita</a>
-                </article>
+    {# Mapa de imagen por categoría — usa tus archivos existentes #}
+    {% set cat_images = {
+        'Cabello':    'img/corte-dama.jpg',
+        'Color':      'img/colorimetria.jpg',
+        'Manicura':   'img/mujer-nails.jpg',
+        'Depilación': 'img/depilacion.jpeg',
+        'Peinados':   'img/peinado.jpg',
+        'Facial':     'img/facial.jpg',
+        'Maquillaje': 'img/maquillaje.jpeg',
+        'Barbería':   'img/barba.jpg'
+    } %}
 
-                <article class="service-card">
-                    <div class="service-image-square">
-                        <img src="{{ url_for('static', filename='img/mujer-tratamiento.jpg') }}" alt="Tratamiento Capilar" class="card-img-square">
+    {% for cat in categorias %}
+        {# Filtrar servicios de esta categoría #}
+        {% set cat_servicios = servicios | selectattr('id_categoria', 'equalto', cat.id_categoria) | list %}
+        {% if cat_servicios %}
+        <div class="category-block" id="cat-{{ cat.id_categoria }}">
+            <div class="category-layout">
+
+                <!-- Imagen + número + nombre -->
+                <div class="category-media">
+                    <img
+                        class="category-img"
+                        src="{{ url_for('static', filename=cat_images.get(cat.nombre_categoria, 'img/hero.jpg')) }}"
+                        alt="{{ cat.nombre_categoria }}">
+                    <span class="category-num">{{ '%02d' % loop.index }}</span>
+                    <p class="category-name">{{ cat.nombre_categoria }}</p>
+                </div>
+
+                <!-- Lista de servicios -->
+                <div class="service-list">
+                    {% for s in cat_servicios %}
+                    <div class="service-row">
+                        <div class="service-info">
+                            <span class="service-name">{{ s.nombre_servicio }}</span>
+                            <span class="service-duration">Duración: {{ s.duracion_minutos }} min</span>
+                        </div>
+                        <span class="service-price">${{ '%g'|format(s.precio|float) }}</span>
                     </div>
-                    <h3 class="service-title">Tratamiento Capilar</h3>
-                    <p class="service-desc">Hidratación profunda, botox capilar o queratina para devolverle el brillo a tu cabello.</p>
-                    <div class="service-price">Desde $800</div>
-                    <a href="#" class="btn-agendar">Agendar Cita</a>
-                </article>
+                    {% endfor %}
+                </div>
 
             </div>
-        </section>
+        </div>
+        {% endif %}
+    {% endfor %}
 
-        <section id="hombres">
-            <h2 class="section-title">Servicios para Hombre</h2>
-            <div class="services-grid">
-                
-                <article class="service-card">
-                    <div class="service-icon">
-                        <img src="{{ url_for('static', filename='img/hombre-corte.jpg') }}" alt="Corte Hombre">
-                    </div>
-                    <h3 class="service-title">Corte Clásico / Fade</h3>
-                    <p class="service-desc">Corte a máquina o tijera, degradados perfectos. Incluye lavado y peinado.</p>
-                    <div class="service-price">Desde $250</div>
-                    <a href="#" class="btn-agendar">Agendar Cita</a>
-                </article>
+</main>
 
-                <article class="service-card">
-                    <div class="service-icon">
-                        <img src="{{ url_for('static', filename='img/hombre-barba.jpg') }}" alt="Diseño de Barba Hombre">
-                    </div>
-                    <h3 class="service-title">Diseño de Barba</h3>
-                    <p class="service-desc">Perfilado, recorte y ritual de toalla caliente para un afeitado impecable.</p>
-                    <div class="service-price">Desde $200</div>
-                    <a href="#" class="btn-agendar">Agendar Cita</a>
-                </article>
+<!-- CTA -->
+<div class="cta-section">
+    <a href="{{ url_for('calendario') }}" class="btn-primary">Agendar mi Cita →</a>
+</div>
 
-                <article class="service-card">
-                    <div class="service-icon">
-                        <img src="{{ url_for('static', filename='img/hombre-facial.jpg') }}" alt="Limpieza Facial Hombre">
-                    </div>
-                    <h3 class="service-title">Limpieza Facial Express</h3>
-                    <p class="service-desc">Exfoliación, extracción de puntos negros e hidratación rápida para cuidar tu piel.</p>
-                    <div class="service-price">Desde $300</div>
-                    <a href="#" class="btn-agendar">Agendar Cita</a>
-                </article>
+<!-- FOOTER -->
+<footer>
+    <div>
+        <p class="footer-brand">Studio 02</p>
+        <p class="footer-desc">Estética boutique atendida por una sola profesional, donde cada cita es un ritual diseñado para ti.</p>
+    </div>
+    <div class="footer-col">
+        <p class="footer-col-title">Contacto</p>
+        <p>hola@studio02.mx<br>+52 000 000 0000</p>
+    </div>
+    <div class="footer-col">
+        <p class="footer-col-title">Horarios</p>
+        <p>Mar — Sáb: 10:00 a 19:00<br>Con cita previa únicamente.</p>
+    </div>
+</footer>
+<div class="footer-bottom">
+    &copy; 2026 Studio 02. Todos los derechos reservados.
+</div>
 
-            </div>
-        </section>
+<script>
+    function filterCat(id, btn) {
+        // Actualizar botón activo
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-    </main>
-
-    <footer>
-        <p>&copy; 2026 Studio 02. Todos los derechos reservados.</p>
-    </footer>
+        // Mostrar / ocultar bloques
+        document.querySelectorAll('.category-block').forEach(block => {
+            if (id === 'all' || block.id === id) {
+                block.style.display = '';
+            } else {
+                block.style.display = 'none';
+            }
+        });
+    }
+</script>
 
 </body>
 </html>
