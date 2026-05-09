@@ -44,10 +44,33 @@
     <main class="container">
         <div class="layout-split">
 
+            <!-- Registrar Cliente (fuera del formulario de cita) -->
+            <div class="booking-card">
+                <h2 class="section-title">Registrar Cliente</h2>
+                <form action="{{ url_for('guardar_cliente') }}" method="POST">
+                    <div class="form-group">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido">Apellido:</label>
+                        <input type="text" id="apellido" name="apellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefono">Teléfono:</label>
+                        <input type="text" id="telefono" name="telefono">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Correo electrónico:</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+                    <button type="submit" class="btn-agendar">Registrar Cliente</button>
+                </form>
+            </div>
+
             <!-- Formulario de cita -->
             <div class="booking-card">
                 <h2 class="section-title" style="font-size: 3rem; margin-bottom: 1rem;">Confirmar Cita</h2>
-
                 <form id="appointment-form" action="{{ url_for('guardar_cita') }}" method="POST">
 
                     <!-- Cliente -->
@@ -103,9 +126,9 @@
                 </form>
             </div>
 
-            <!-- Calendario visual -->
-            <div id="calendar-container">
-                <div id="calendar"></div>
+            <!-- Calendario visual (eventos inyectados de forma segura en data-eventos) -->
+            <div id="calendar-container" class="booking-card" style="padding: 1rem;">
+                <div id="calendar" data-eventos='{{ eventos|tojson|safe }}'></div>
             </div>
 
         </div>
@@ -115,36 +138,62 @@
         <p>&copy; 2026 Studio 02. Todos los derechos reservados.</p>
     </footer>
 
+    <!-- FullCalendar (una sola inclusión) -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
     <script>
-        // Sincroniza el calendario con el input fecha_inicio
-        document.addEventListener('DOMContentLoaded', function () {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'timeGridWeek',
-                locale: 'es',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                slotMinTime: '08:00:00',
-                slotMaxTime: '20:00:00',
-                allDaySlot: false,
-                selectable: true,
-                select: function (info) {
-                    // Al seleccionar un rango en el calendario, llena los inputs automáticamente
-                    var toLocal = function(date) {
-                        var off = date.getTimezoneOffset();
-                        var local = new Date(date.getTime() - off * 60000);
-                        return local.toISOString().slice(0, 16);
-                    };
-                    document.getElementById('fecha_inicio').value = toLocal(info.start);
-                    document.getElementById('fecha_fin').value   = toLocal(info.end);
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+
+        // Leer eventos desde el atributo data-eventos de forma segura
+        var eventosServer = [];
+        try {
+            var raw = calendarEl.getAttribute('data-eventos') || '[]';
+            eventosServer = JSON.parse(raw);
+            if (!Array.isArray(eventosServer)) eventosServer = [];
+        } catch (err) {
+            console.warn("Error parseando eventos del servidor:", err);
+            eventosServer = [];
+        }
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'timeGridWeek',
+            locale: 'es',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            slotMinTime: '08:00:00',
+            slotMaxTime: '20:00:00',
+            allDaySlot: false,
+            selectable: true,
+            events: eventosServer,
+            eventClick: function(info) {
+                var servicios = (info.event.extendedProps && info.event.extendedProps.servicios) || [];
+                var notas = (info.event.extendedProps && info.event.extendedProps.notas) || '';
+                var msg = "Cliente: " + info.event.title + "\n\n";
+                if (servicios.length) {
+                    msg += "Servicios:\n- " + servicios.join("\n- ") + "\n\n";
                 }
-            });
-            calendar.render();
+                msg += "Notas: " + (notas || "N/A");
+                alert(msg);
+            },
+            select: function(info) {
+                var toLocal = function(date) {
+                    var off = date.getTimezoneOffset();
+                    var local = new Date(date.getTime() - off * 60000);
+                    return local.toISOString().slice(0, 16);
+                };
+                var inicioInput = document.getElementById('fecha_inicio');
+                var finInput = document.getElementById('fecha_fin');
+                if (inicioInput) inicioInput.value = toLocal(info.start);
+                if (finInput) finInput.value = toLocal(info.end);
+            }
         });
+
+        calendar.render();
+    });
     </script>
 </body>
 </html>
