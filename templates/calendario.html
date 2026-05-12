@@ -1,199 +1,878 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
+    <link rel="manifest"
+          href="{{ url_for('static', filename='manifest.json') }}">
+
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/static/js/service-worker.js')
-                .then(() => console.log('Service Worker registrado con éxito'));
+                .then(() => console.log('Service Worker registrado'));
         }
     </script>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
     <title>Reservar Cita | Studio 02</title>
-    <link href="https://fonts.googleapis.com/css2?family=Italianno&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500&display=swap"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <style>
+
+        .booking-page{
+
+            padding-top:90px;
+
+        }
+
+        .booking-hero{
+
+            padding:5rem 2.5rem 4rem;
+
+            border-bottom:1px solid var(--line);
+
+            background:
+                linear-gradient(
+                    to bottom,
+                    rgba(245,242,237,.75),
+                    rgba(245,242,237,1)
+                ),
+                url("{{ url_for('static', filename='img/booking-bg.jpg') }}");
+
+            background-size:cover;
+            background-position:center;
+
+        }
+
+        .booking-hero-grid{
+
+            display:grid;
+            grid-template-columns:1fr 1fr;
+
+            gap:4rem;
+
+            align-items:end;
+
+        }
+
+        .booking-title{
+
+            font-family:var(--serif);
+
+            font-size:clamp(3rem,5vw,5rem);
+
+            font-weight:300;
+
+            line-height:1.05;
+
+        }
+
+        .booking-title em{
+
+            color:var(--warm);
+
+            font-style:italic;
+
+        }
+
+        .booking-desc{
+
+            font-size:.9rem;
+
+            line-height:1.9;
+
+            color:var(--muted);
+
+            max-width:42ch;
+
+        }
+
+        .booking-layout{
+
+            display:grid;
+            grid-template-columns:420px 1fr;
+
+            gap:2rem;
+
+            padding:2.5rem;
+
+            align-items:start;
+
+        }
+
+        .booking-sidebar{
+
+            display:flex;
+            flex-direction:column;
+
+            gap:2rem;
+
+            position:sticky;
+            top:110px;
+
+        }
+
+        .booking-card{
+
+            background:white;
+
+            border:1px solid var(--line);
+
+            padding:2rem;
+
+        }
+
+        .card-title{
+
+            font-family:var(--serif);
+
+            font-size:2rem;
+
+            font-weight:300;
+
+            margin-bottom:1.5rem;
+
+        }
+
+        .card-title em{
+
+            color:var(--warm);
+
+            font-style:italic;
+
+        }
+
+        .form-group{
+
+            display:flex;
+            flex-direction:column;
+
+            gap:.55rem;
+
+            margin-bottom:1.2rem;
+
+        }
+
+        .form-group label{
+
+            font-size:.62rem;
+
+            font-weight:500;
+
+            letter-spacing:.15em;
+
+            text-transform:uppercase;
+
+            color:var(--muted);
+
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea{
+
+            width:100%;
+
+            padding:1rem 0;
+
+            border:none;
+
+            border-bottom:1px solid var(--line);
+
+            background:transparent;
+
+            font-family:var(--sans);
+
+            font-size:.92rem;
+
+            color:var(--ink);
+
+            resize:none;
+
+            transition:.25s;
+
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus{
+
+            outline:none;
+
+            border-color:var(--warm);
+
+        }
+
+        .checkbox-list{
+
+            display:flex;
+            flex-direction:column;
+
+            gap:.5rem;
+
+            margin-top:.5rem;
+
+        }
+
+        .checkbox-label{
+
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+
+            gap:1rem;
+
+            padding:.9rem 1rem;
+
+            border:1px solid var(--line);
+
+            transition:.2s;
+
+            cursor:pointer;
+
+        }
+
+        .checkbox-label:hover{
+
+            border-color:var(--warm);
+
+            background:#faf7f2;
+
+        }
+
+        .checkbox-label input{
+
+            margin-right:.8rem;
+
+        }
+
+        .precio-tag{
+
+            font-size:.7rem;
+
+            background:#f2ebe3;
+
+            padding:.3rem .7rem;
+
+            white-space:nowrap;
+
+        }
+
+        .category-name{
+
+            font-size:.7rem;
+
+            font-weight:600;
+
+            letter-spacing:.14em;
+
+            text-transform:uppercase;
+
+            color:var(--muted);
+
+            margin:1.5rem 0 .8rem;
+
+        }
+
+        .btn-book{
+
+            width:100%;
+
+            margin-top:1rem;
+
+            border:none;
+
+            cursor:pointer;
+
+        }
+
+        .calendar-card{
+
+            background:white;
+
+            border:1px solid var(--line);
+
+            padding:2rem;
+
+            overflow:hidden;
+
+        }
+
+        #calendar{
+
+            min-height:850px;
+
+        }
+
+        .fc{
+
+            font-family:var(--sans);
+
+        }
+
+        .fc-toolbar-title{
+
+            font-family:var(--serif) !important;
+
+            font-size:2rem !important;
+
+            font-weight:300 !important;
+
+        }
+
+        .fc-button{
+
+            background:var(--ink) !important;
+
+            border:none !important;
+
+            border-radius:0 !important;
+
+            padding:.7rem 1rem !important;
+
+            text-transform:uppercase !important;
+
+            letter-spacing:.1em !important;
+
+            font-size:.65rem !important;
+
+            box-shadow:none !important;
+
+        }
+
+        .fc-button:hover{
+
+            background:var(--warm) !important;
+
+        }
+
+        .fc-theme-standard td,
+        .fc-theme-standard th,
+        .fc-theme-standard .fc-scrollgrid{
+
+            border-color:var(--line) !important;
+
+        }
+
+        .fc-col-header-cell{
+
+            background:#faf7f2;
+
+            padding:.7rem 0;
+
+        }
+
+        .fc-event{
+
+            background:var(--ink) !important;
+
+            border:none !important;
+
+            padding:.2rem .3rem;
+
+            border-radius:0 !important;
+
+        }
+
+        .fc-timegrid-slot{
+
+            height:4rem !important;
+
+        }
+
+        .alert{
+
+            padding:1rem 1.2rem;
+
+            margin-bottom:1rem;
+
+            background:#f4dfdf;
+
+            color:#8c3c3c;
+
+            border-left:3px solid #af5d5d;
+
+        }
+
+        footer{
+
+            margin-top:3rem;
+
+        }
+
+        @media(max-width:1100px){
+
+            .booking-layout{
+
+                grid-template-columns:1fr;
+
+            }
+
+            .booking-sidebar{
+
+                position:relative;
+                top:0;
+
+            }
+
+        }
+
+        @media(max-width:900px){
+
+            .booking-hero-grid{
+
+                grid-template-columns:1fr;
+
+                gap:1.5rem;
+
+            }
+
+            .booking-layout{
+
+                padding:1.5rem;
+
+            }
+
+            .booking-hero{
+
+                padding:4rem 1.5rem 3rem;
+
+            }
+
+            .calendar-card{
+
+                overflow-x:auto;
+
+            }
+
+            #calendar{
+
+                min-width:900px;
+
+            }
+
+        }
+
+    </style>
+
 </head>
+
 <body>
 
-    <header class="navbar">
-        <nav>
-            <a href="{{ url_for('index') }}">Inicio</a>
-            <a href="{{ url_for('servicios') }}">Servicios</a>
-            <a href="{{ url_for('historial') }}">Historial</a>
-        </nav>
-    </header>
+    <nav class="nav">
 
-    <div class="services-header">
-        <h1>Reserva tu Espacio</h1>
-        <p>Selecciona el día y la hora que mejor te convenga</p>
-    </div>
+        <a href="{{ url_for('index') }}"
+           class="nav-brand">
 
-    <!-- Flash messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="container" style="margin-top: 1rem;">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
+            Studio 02
+
+        </a>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="{{ url_for('index') }}">
+                    Inicio
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('servicios') }}">
+                    Servicios
+                </a>
+            </li>
+
+            <li>
+                <a class="active">
+                    Reservas
+                </a>
+            </li>
+
+        </ul>
+
+        <a href="{{ url_for('historial') }}"
+           class="nav-cta">
+
+            Historial
+
+        </a>
+
+    </nav>
+
+    <main class="booking-page">
+
+        <section class="booking-hero">
+
+            <div class="booking-hero-grid">
+
+                <div>
+
+                    <div class="hero-eyebrow">
+                        Luxury Appointment System
+                    </div>
+
+                    <h1 class="booking-title">
+                        Reserva tu <em>Espacio</em>
+                    </h1>
+
+                </div>
+
+                <p class="booking-desc">
+
+                    Agenda citas, administra clientes
+                    y organiza servicios desde un
+                    sistema elegante y minimalista
+                    diseñado para Studio 02.
+
+                </p>
+
             </div>
-        {% endif %}
-    {% endwith %}
 
-    <main class="container">
-        <div class="layout-split">
+        </section>
 
-            <!-- Registrar Cliente (fuera del formulario de cita) -->
-            <div class="booking-card">
-                <h2 class="section-title">Registrar Cliente</h2>
-                <form action="{{ url_for('guardar_cliente') }}" method="POST">
-                    <div class="form-group">
-                        <label for="nombre">Nombre:</label>
-                        <input type="text" id="nombre" name="nombre" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="apellido">Apellido:</label>
-                        <input type="text" id="apellido" name="apellido" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="telefono">Teléfono:</label>
-                        <input type="text" id="telefono" name="telefono">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Correo electrónico:</label>
-                        <input type="email" id="email" name="email">
-                    </div>
-                    <button type="submit" class="btn-agendar">Registrar Cliente</button>
-                </form>
-            </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
 
-            <!-- Formulario de cita -->
-            <div class="booking-card">
-                <h2 class="section-title" style="font-size: 3rem; margin-bottom: 1rem;">Confirmar Cita</h2>
-                <form id="appointment-form" action="{{ url_for('guardar_cita') }}" method="POST">
+                <div style="padding:1.5rem 2.5rem 0;">
 
-                    <!-- Cliente -->
-                    <div class="form-group">
-                        <label for="id_cliente">Cliente:</label>
-                        <select id="id_cliente" name="id_cliente" required>
-                            <option value="">Selecciona un cliente</option>
-                            {% for cliente in clientes %}
-                                <option value="{{ cliente.id_cliente }}">
-                                    {{ cliente.nombre }} {{ cliente.apellido }}
-                                    {% if cliente.telefono %} — {{ cliente.telefono }}{% endif %}
+                    {% for category, message in messages %}
+
+                        <div class="alert">
+                            {{ message }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+        {% endwith %}
+
+        <section class="booking-layout">
+
+            <div class="booking-sidebar">
+
+                <!-- CLIENTE -->
+
+                <div class="booking-card">
+
+                    <h2 class="card-title">
+                        Nuevo <em>Cliente</em>
+                    </h2>
+
+                    <form action="{{ url_for('guardar_cliente') }}"
+                          method="POST">
+
+                        <div class="form-group">
+
+                            <label>Nombre</label>
+
+                            <input type="text"
+                                   name="nombre"
+                                   required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>Apellido</label>
+
+                            <input type="text"
+                                   name="apellido"
+                                   required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>Teléfono</label>
+
+                            <input type="text"
+                                   name="telefono">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>Correo electrónico</label>
+
+                            <input type="email"
+                                   name="email">
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn-primary btn-book">
+
+                            Registrar Cliente
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <!-- RESERVA -->
+
+                <div class="booking-card">
+
+                    <h2 class="card-title">
+                        Confirmar <em>Cita</em>
+                    </h2>
+
+                    <form id="appointment-form"
+                          action="{{ url_for('guardar_cita') }}"
+                          method="POST">
+
+                        <div class="form-group">
+
+                            <label>Cliente</label>
+
+                            <select name="id_cliente" required>
+
+                                <option value="">
+                                    Selecciona un cliente
                                 </option>
+
+                                {% for cliente in clientes %}
+
+                                    <option value="{{ cliente.id_cliente }}">
+
+                                        {{ cliente.nombre }}
+                                        {{ cliente.apellido }}
+
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>Fecha inicio</label>
+
+                            <input type="datetime-local"
+                                   id="fecha_inicio"
+                                   name="fecha_inicio"
+                                   required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>Fecha fin</label>
+
+                            <input type="datetime-local"
+                                   id="fecha_fin"
+                                   name="fecha_fin"
+                                   required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>Servicios</label>
+
+                            {% for categoria in categorias %}
+
+                                <div class="category-name">
+
+                                    {{ categoria.nombre_categoria }}
+
+                                </div>
+
+                                <div class="checkbox-list">
+
+                                    {% for servicio in servicios %}
+
+                                        {% if servicio.id_categoria == categoria.id_categoria %}
+
+                                        <label class="checkbox-label">
+
+                                            <div>
+
+                                                <input type="checkbox"
+                                                       name="servicios"
+                                                       value="{{ servicio.id_servicio }}">
+
+                                                {{ servicio.nombre_servicio }}
+
+                                            </div>
+
+                                            <span class="precio-tag">
+
+                                                ${{ "%.0f"|format(servicio.precio) }}
+
+                                            </span>
+
+                                        </label>
+
+                                        {% endif %}
+
+                                    {% endfor %}
+
+                                </div>
+
                             {% endfor %}
-                        </select>
-                    </div>
 
-                    <!-- Fecha inicio -->
-                    <div class="form-group">
-                        <label for="fecha_inicio">Fecha y hora de inicio:</label>
-                        <input type="datetime-local" id="fecha_inicio" name="fecha_inicio" required>
-                    </div>
+                        </div>
 
-                    <!-- Fecha fin -->
-                    <div class="form-group">
-                        <label for="fecha_fin">Fecha y hora de fin:</label>
-                        <input type="datetime-local" id="fecha_fin" name="fecha_fin" required>
-                    </div>
+                        <div class="form-group">
 
-                    <!-- Servicios agrupados por categoría -->
-                    <div class="form-group">
-                        <label>Servicios:</label>
-                        {% for categoria in categorias %}
-                            <p style="font-weight: 600; margin: 0.5rem 0 0.2rem;">{{ categoria.nombre_categoria }}</p>
-                            {% for servicio in servicios %}
-                                {% if servicio.id_categoria == categoria.id_categoria %}
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="servicios" value="{{ servicio.id_servicio }}">
-                                        {{ servicio.nombre_servicio }}
-                                        <span class="precio-tag">${{ "%.0f"|format(servicio.precio) }}</span>
-                                    </label>
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-                    </div>
+                            <label>Notas</label>
 
-                    <!-- Notas -->
-                    <div class="form-group">
-                        <label for="notas">Notas (opcional):</label>
-                        <textarea id="notas" name="notas" rows="2" placeholder="Indicaciones especiales..."></textarea>
-                    </div>
+                            <textarea name="notas"
+                                      rows="3"
+                                      placeholder="Indicaciones especiales..."></textarea>
 
-                    <button type="submit" class="btn-agendar" style="width: 100%;">Confirmar Reserva</button>
-                </form>
+                        </div>
+
+                        <button type="submit"
+                                class="btn-primary btn-book">
+
+                            Confirmar Reserva
+
+                        </button>
+
+                    </form>
+
+                </div>
+
             </div>
 
-            <!-- Calendario visual (eventos inyectados de forma segura en data-eventos) -->
-            <div id="calendar-container" class="booking-card" style="padding: 1rem;">
-                <div id="calendar" data-eventos='{{ eventos|tojson|safe }}'></div>
+            <!-- CALENDAR -->
+
+            <div class="calendar-card">
+
+                <div id="calendar"
+                     data-eventos='{{ eventos|tojson|safe }}'></div>
+
             </div>
 
-        </div>
+        </section>
+
     </main>
 
     <footer>
-        <p>&copy; 2026 Studio 02. Todos los derechos reservados.</p>
+
+        <p>
+            &copy; 2026 Studio 02. Todos los derechos reservados.
+        </p>
+
     </footer>
 
-    <!-- FullCalendar (una sola inclusión) -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
 
     <script>
+
     document.addEventListener('DOMContentLoaded', function () {
+
         var calendarEl = document.getElementById('calendar');
 
-        // Leer eventos desde el atributo data-eventos de forma segura
         var eventosServer = [];
+
         try {
+
             var raw = calendarEl.getAttribute('data-eventos') || '[]';
+
             eventosServer = JSON.parse(raw);
-            if (!Array.isArray(eventosServer)) eventosServer = [];
+
         } catch (err) {
-            console.warn("Error parseando eventos del servidor:", err);
+
             eventosServer = [];
+
         }
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
+
             initialView: 'timeGridWeek',
+
             locale: 'es',
+
             headerToolbar: {
+
                 left: 'prev,next today',
+
                 center: 'title',
+
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
+
             },
+
             slotMinTime: '08:00:00',
+
             slotMaxTime: '20:00:00',
+
             allDaySlot: false,
+
             selectable: true,
+
             events: eventosServer,
+
             eventClick: function(info) {
-                var servicios = (info.event.extendedProps && info.event.extendedProps.servicios) || [];
-                var notas = (info.event.extendedProps && info.event.extendedProps.notas) || '';
+
+                var servicios = (info.event.extendedProps &&
+                                 info.event.extendedProps.servicios) || [];
+
+                var notas = (info.event.extendedProps &&
+                             info.event.extendedProps.notas) || '';
+
                 var msg = "Cliente: " + info.event.title + "\n\n";
+
                 if (servicios.length) {
-                    msg += "Servicios:\n- " + servicios.join("\n- ") + "\n\n";
+
+                    msg += "Servicios:\n- " +
+                           servicios.join("\n- ") + "\n\n";
+
                 }
+
                 msg += "Notas: " + (notas || "N/A");
+
                 alert(msg);
+
             },
+
             select: function(info) {
+
                 var toLocal = function(date) {
+
                     var off = date.getTimezoneOffset();
-                    var local = new Date(date.getTime() - off * 60000);
+
+                    var local =
+                        new Date(date.getTime() - off * 60000);
+
                     return local.toISOString().slice(0, 16);
+
                 };
-                var inicioInput = document.getElementById('fecha_inicio');
-                var finInput = document.getElementById('fecha_fin');
-                if (inicioInput) inicioInput.value = toLocal(info.start);
-                if (finInput) finInput.value = toLocal(info.end);
+
+                document.getElementById('fecha_inicio').value =
+                    toLocal(info.start);
+
+                document.getElementById('fecha_fin').value =
+                    toLocal(info.end);
+
             }
+
         });
 
         calendar.render();
+
     });
+
     </script>
+
 </body>
 </html>

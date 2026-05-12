@@ -1,60 +1,182 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
     <meta charset="UTF-8">
-    <title>Historial de Citas | Studio 02</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Historial | Studio 02</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500&display=swap"
+          rel="stylesheet">
+
 </head>
+
 <body>
-    <header class="navbar">
-        <nav>
-            <a href="{{ url_for('index') }}">Inicio</a>
-            <a href="{{ url_for('servicios') }}">Servicios</a>
-            <a href="{{ url_for('calendario') }}">Agendar</a>
-        </nav>
+
+    <nav class="nav">
+
+        <a href="{{ url_for('index') }}"
+           class="nav-brand">
+
+            Studio 02
+
+        </a>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="{{ url_for('index') }}">
+                    Inicio
+                </a>
+            </li>
+
+            <li>
+                <a class="active">
+                    Historial
+                </a>
+            </li>
+
+        </ul>
+
+        <a href="{{ url_for('logout') }}"
+           class="logout-link">
+
+            Cerrar sesión
+
+        </a>
+
+    </nav>
+
+    <header class="page-header">
+
+        <div class="page-eyebrow">
+            Administración
+        </div>
+
+        <div class="page-header-grid">
+
+            <h1 class="page-title">
+                Historial de <em>Reservas</em>
+            </h1>
+
+            <p class="page-desc">
+                Consulta citas registradas,
+                clientes y servicios.
+            </p>
+
+        </div>
+
     </header>
 
-    <main class="container">
-        <h1>Historial de Citas</h1>
+    <main class="history-wrapper">
 
         {% if citas %}
-            <table class="historial-table">
+
+        <div class="history-card">
+
+            <table class="history-table">
+
                 <thead>
+
                     <tr>
+
                         <th>Cliente</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Fin</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
                         <th>Servicios</th>
                         <th>Notas</th>
                         <th>Estado</th>
+
                     </tr>
+
                 </thead>
+
                 <tbody>
+
                     {% for cita in citas %}
-                        <tr>
-                            <td>{{ cita.cliente.nombre }} {{ cita.cliente.apellido }}</td>
-                            <td>{{ cita.fecha_inicio }}</td>
-                            <td>{{ cita.fecha_fin }}</td>
-                            <td>
-                                {% for detalle in cita.detalles %}
-                                    • {{ detalle.servicio.nombre_servicio }}  
-                                    <span class="precio-tag">${{ "%.0f"|format(detalle.servicio.precio) }}</span><br>
-                                {% endfor %}
-                            </td>
-                            <td>{{ cita.notas }}</td>
-                            <td>{{ cita.estado }}</td>
-                        </tr>
+
+                    <tr>
+
+                        <td>
+
+                            <div class="client-name">
+
+                                {{ cita.cliente.nombre }}
+                                {{ cita.cliente.apellido }}
+
+                            </div>
+
+                        </td>
+
+                        <td>
+                            {{ cita.fecha_inicio }}
+                        </td>
+
+                        <td>
+                            {{ cita.fecha_fin }}
+                        </td>
+
+                        <td>
+
+                            {% for detalle in cita.detalles %}
+
+                                <span class="service-chip">
+
+                                    {{ detalle.servicio.nombre_servicio }}
+
+                                </span>
+
+                            {% endfor %}
+
+                        </td>
+
+                        <td>
+                            {{ cita.notas }}
+                        </td>
+
+                        <td>
+
+                            <span class="status">
+
+                                {{ cita.estado }}
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
                     {% endfor %}
+
                 </tbody>
+
             </table>
+
+        </div>
+
         {% else %}
-            <p>No hay citas registradas todavía.</p>
+
+        <div class="empty-state">
+
+            <h3>
+                No hay citas registradas
+            </h3>
+
+            <p>
+                Las reservas aparecerán aquí.
+            </p>
+
+        </div>
+
         {% endif %}
+
     </main>
 
-    <footer>
-        <p>&copy; 2026 Studio 02. Todos los derechos reservados.</p>
-    </footer>
 </body>
 </html>

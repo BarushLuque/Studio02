@@ -509,3 +509,482 @@ footer p {
     .category-layout { grid-template-columns: 1fr; }
     .category-img { width: 100%; height: 220px; }
 }
+
+/* =========================================================
+   LOGIN PAGE
+========================================================= */
+
+.login-page{
+
+    min-height:100vh;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:2rem;
+
+    background:
+        linear-gradient(rgba(26,24,20,.45), rgba(26,24,20,.45)),
+        url("../img/login-bg.jpg");
+
+    background-size:cover;
+    background-position:center;
+
+}
+
+.login-shell{
+
+    width:100%;
+    max-width:1100px;
+
+    min-height:680px;
+
+    display:grid;
+    grid-template-columns:1fr 480px;
+
+    background:rgba(245,242,237,.93);
+
+    backdrop-filter:blur(12px);
+
+    overflow:hidden;
+
+    box-shadow:
+        0 40px 80px rgba(0,0,0,.25);
+
+}
+
+.login-left{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.login-left img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    display:block;
+
+}
+
+.login-overlay{
+
+    position:absolute;
+    inset:0;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(26,24,20,.72),
+            rgba(26,24,20,.1)
+        );
+
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+
+    padding:4rem;
+
+}
+
+.login-overlay .hero-eyebrow{
+
+    color:rgba(255,255,255,.65);
+
+}
+
+.login-overlay h2{
+
+    font-family:var(--serif);
+
+    font-size:clamp(2.5rem,4vw,4rem);
+
+    font-weight:300;
+
+    line-height:1.05;
+
+    color:white;
+
+    max-width:10ch;
+
+}
+
+.login-panel{
+
+    padding:4rem;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+
+}
+
+.login-brand{
+
+    font-family:var(--serif);
+
+    font-size:2rem;
+
+    text-decoration:none;
+
+    color:var(--ink);
+
+    margin-bottom:4rem;
+
+}
+
+.login-title{
+
+    font-family:var(--serif);
+
+    font-size:3rem;
+
+    font-weight:300;
+
+    line-height:1;
+
+    margin-bottom:1rem;
+
+}
+
+.login-title em{
+
+    color:var(--warm);
+
+    font-style:italic;
+
+}
+
+.login-subtitle{
+
+    font-size:.9rem;
+
+    line-height:1.8;
+
+    color:var(--muted);
+
+    margin-bottom:2.5rem;
+
+    max-width:34ch;
+
+}
+
+.login-form{
+
+    display:flex;
+    flex-direction:column;
+
+    gap:1.25rem;
+
+}
+
+.input-group{
+
+    display:flex;
+    flex-direction:column;
+
+    gap:.6rem;
+
+}
+
+.input-group label{
+
+    font-size:.65rem;
+
+    font-weight:500;
+
+    letter-spacing:.15em;
+
+    text-transform:uppercase;
+
+    color:var(--muted);
+
+}
+
+.input-group input{
+
+    height:58px;
+
+    border:none;
+    border-bottom:1px solid var(--line);
+
+    background:transparent;
+
+    font-family:var(--sans);
+
+    font-size:.95rem;
+
+    color:var(--ink);
+
+    transition:.25s;
+
+}
+
+.input-group input:focus{
+
+    outline:none;
+
+    border-color:var(--warm);
+
+}
+
+.login-form .btn-primary{
+
+    margin-top:1rem;
+
+    border:none;
+
+    cursor:pointer;
+
+    justify-content:center;
+
+}
+
+.flash-error{
+
+    margin-bottom:1.5rem;
+
+    padding:1rem 1.2rem;
+
+    background:#f6dfdf;
+
+    border-left:3px solid #af5d5d;
+
+    color:#8c3c3c;
+
+    font-size:.82rem;
+
+}
+
+/* =========================================================
+   HISTORIAL PAGE
+========================================================= */
+
+.history-wrapper{
+
+    padding:2rem 2.5rem 6rem;
+
+}
+
+.history-card{
+
+    background:white;
+
+    border:1px solid var(--line);
+
+    overflow:hidden;
+
+}
+
+.history-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.history-table thead{
+
+    background:var(--ink);
+
+}
+
+.history-table th{
+
+    text-align:left;
+
+    padding:1.4rem;
+
+    color:var(--cream);
+
+    font-size:.62rem;
+
+    font-weight:500;
+
+    letter-spacing:.15em;
+
+    text-transform:uppercase;
+
+}
+
+.history-table td{
+
+    padding:1.5rem 1.4rem;
+
+    border-bottom:1px solid var(--line);
+
+    vertical-align:top;
+
+    font-size:.88rem;
+
+}
+
+.history-table tbody tr{
+
+    transition:.2s;
+
+}
+
+.history-table tbody tr:hover{
+
+    background:#faf7f2;
+
+}
+
+.client-name{
+
+    font-weight:500;
+
+    font-size:.92rem;
+
+}
+
+.service-chip{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:.35rem .7rem;
+
+    background:#f2ebe3;
+
+    margin:.2rem;
+
+    font-size:.7rem;
+
+    letter-spacing:.04em;
+
+}
+
+.status{
+
+    display:inline-flex;
+
+    align-items:center;
+    justify-content:center;
+
+    padding:.5rem .8rem;
+
+    background:#edf5ee;
+
+    color:#51755a;
+
+    font-size:.72rem;
+
+    letter-spacing:.08em;
+
+    text-transform:uppercase;
+
+}
+
+.logout-link{
+
+    font-size:.65rem;
+
+    font-weight:500;
+
+    letter-spacing:.15em;
+
+    text-transform:uppercase;
+
+    text-decoration:none;
+
+    color:var(--ink);
+
+    border-bottom:1px solid var(--ink);
+
+    padding-bottom:.3rem;
+
+    transition:.25s;
+
+}
+
+.logout-link:hover{
+
+    color:var(--warm);
+
+    border-color:var(--warm);
+
+}
+
+.empty-state{
+
+    padding:6rem 2rem;
+
+    background:white;
+
+    border:1px solid var(--line);
+
+    text-align:center;
+
+}
+
+.empty-state h3{
+
+    font-family:var(--serif);
+
+    font-size:2rem;
+
+    font-weight:300;
+
+    margin-bottom:1rem;
+
+}
+
+.empty-state p{
+
+    color:var(--muted);
+
+}
+
+/* =========================================================
+   RESPONSIVE LOGIN + HISTORIAL
+========================================================= */
+
+@media (max-width: 900px){
+
+    .login-shell{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .login-left{
+
+        height:280px;
+
+    }
+
+    .login-panel{
+
+        padding:3rem 2rem;
+
+    }
+
+    .login-overlay{
+
+        padding:2rem;
+
+    }
+
+    .history-wrapper{
+
+        overflow-x:auto;
+
+    }
+
+    .history-card{
+
+        min-width:1000px;
+
+    }
+
+}

@@ -1,4 +1,4 @@
-from flask import Flask, flash, render_template, request, redirect, url_for, jsonify
+from flask import Flask, flash, render_template, request, redirect, url_for, jsonify, session
 from itsdangerous import URLSafeTimedSerializer
 from DAO.db import db_session
 from sqlalchemy import desc
@@ -65,11 +65,18 @@ def calendario():
         return f"Error al cargar calendario: {str(e)}", 500
 
 # --- Lógica del Historial ---
-@app.route('/historial', methods=["GET"])
+@app.route('/historial', methods=['GET'])
 def historial():
+
+    # Verifica si inició sesión
+    if not session.get('logueado'):
+        flash('Debes iniciar sesión primero', 'error')
+        return redirect(url_for('login'))
+
     try:
         lista_citas = db_session.query(Cita).order_by(desc(Cita.fecha_inicio)).all()
         return render_template('historial.html', citas=lista_citas)
+
     except Exception as e:
         return f"Error al cargar el historial: {str(e)}", 500
     
@@ -195,6 +202,33 @@ def test_db():
         return jsonify({"status": "error", "mensaje": str(e)}), 500
     finally:
         db.close()
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        usuario = request.form.get('usuario')
+        password = request.form.get('password')
+
+        # Credenciales de ejemplo
+        USER_CORRECTO = 'admin'
+        PASS_CORRECTA = '123456'
+
+        if usuario == USER_CORRECTO and password == PASS_CORRECTA:
+            session['logueado'] = True
+            session['usuario'] = usuario
+
+            return redirect(url_for('historial'))
+
+        flash('Usuario o contraseña incorrectos', 'error')
+
+    return render_template('login.html')
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('Sesión cerrada correctamente', 'success')
+    return redirect(url_for('login'))
 
 if __name__ == "__main__":
     app.run(debug=True)
