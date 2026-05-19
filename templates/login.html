@@ -3,106 +3,72 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Login | Studio 02</title>
-
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/styles.css') }}">
-
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500&display=swap"
           rel="stylesheet">
-
 </head>
-
 <body class="login-page">
-
     <div class="login-shell">
-
         <div class="login-left">
-
             <img src="{{ url_for('static', filename='img/login-side.jpg') }}">
-
             <div class="login-overlay">
-
                 <span class="hero-eyebrow">
-                    Luxury Beauty Studio
+                    Studio 02
                 </span>
-
                 <h2>
-                    Elegancia en cada detalle.
+                    Todo al detalle.
                 </h2>
-
             </div>
-
         </div>
-
         <div class="login-panel">
-
             <a href="{{ url_for('index') }}"
                class="login-brand">
-
                 Studio 02
-
             </a>
-
             <h1 class="login-title">
                 Panel <em>Privado</em>
             </h1>
-
             <p class="login-subtitle">
                 Accede al sistema administrativo
                 para gestionar citas y clientes.
             </p>
-
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-
                         <div class="flash-error">
                             {{ message }}
                         </div>
-
                     {% endfor %}
                 {% endif %}
             {% endwith %}
-
             <form method="POST"
                   class="login-form">
-
+                <input type="hidden"
+                       name="csrf_token"
+                       value="{{ csrf_token() }}">
                 <div class="input-group">
-
                     <label>Usuario</label>
-
                     <input type="text"
                            name="usuario"
+                           autocomplete="username"
                            required>
-
                 </div>
-
                 <div class="input-group">
-
                     <label>Contraseña</label>
-
                     <input type="password"
                            name="password"
+                           autocomplete="current-password"
                            required>
-
                 </div>
-
                 <button type="submit"
                         class="btn-primary">
-
                     Ingresar
-
                 </button>
-
             </form>
-
         </div>
-
     </div>
-
 </body>
 </html>

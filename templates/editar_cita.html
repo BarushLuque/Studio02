@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Cita | Studio 02</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav class="nav">
+
+        <a href="{{ url_for('index') }}" class="nav-brand">
+            Studio 02
+        </a>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="{{ url_for('index') }}">
+                    Inicio
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('historial') }}">
+                    Historial
+                </a>
+            </li>
+
+        </ul>
+
+        <a href="{{ url_for('logout') }}" class="logout-link">
+            Cerrar sesión
+        </a>
+
+    </nav>
+
+    <header class="page-header">
+
+        <div class="page-eyebrow">
+            Administración
+        </div>
+
+        <div class="page-header-grid">
+
+            <h1 class="page-title">
+                Editar <em>Cita</em>
+            </h1>
+
+            <p class="page-desc">
+                Modifica la fecha y hora de la cita.
+            </p>
+
+        </div>
+
+    </header>
+
+    <main class="form-wrapper">
+
+        <div class="form-card">
+
+            <form
+                method="POST"
+                action="{{ url_for('actualizar_cita', id_cita=cita.id_cita) }}"
+                class="edit-form"
+                id="editForm"
+            >
+
+                <div class="form-group">
+
+                    <label for="cliente">
+                        Cliente
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cliente"
+                        value="{{ cita.cliente.nombre }} {{ cita.cliente.apellido }}"
+                        disabled
+                        class="form-input"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="fecha_inicio">
+                        Fecha y Hora
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        id="fecha_inicio"
+                        name="fecha_inicio"
+                        value="{{ cita.fecha_inicio.strftime('%Y-%m-%dT%H:%M') }}"
+                        required
+                        class="form-input"
+                    >
+
+                    <div class="error-message" id="error-inicio"></div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Servicios
+                    </label>
+
+                    <div class="services-list">
+
+                        {% for detalle in cita.detalles %}
+
+                            <span class="service-chip">
+
+                                {{ detalle.servicio.nombre_servicio }}
+
+                                -
+
+                                {{ detalle.servicio.duracion_minutos }} min
+
+                            </span>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="duracion-total-info">
+
+                        Duración total:
+
+                        {{ cita.fecha_fin|default('', True) != '' and ((cita.fecha_fin - cita.fecha_inicio).total_seconds() / 60)|int or 'calculando' }}
+
+                        minutos
+
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        id="submitBtn"
+                    >
+                        Guardar Cambios
+                    </button>
+
+                    <a
+                        href="{{ url_for('historial') }}"
+                        class="btn btn-secondary"
+                    >
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <!-- datos para js -->
+
+    <script>
+
+        const citaData = {
+
+            citaId: {{ cita.id_cita }},
+
+            servicios: {{ cita.detalles|map(attribute='id_servicio')|list|tojson|safe }},
+
+            apiUrl: "{{ url_for('api_validar_disponibilidad') }}"
+
+        };
+
+    </script>
+
+    <!-- js externo -->
+
+    <script src="{{ url_for('static', filename='js/editar_cita.js') }}"></script>
+
+</body>
+</html>

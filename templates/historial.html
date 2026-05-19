@@ -14,57 +14,38 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500&display=swap"
           rel="stylesheet">
-
 </head>
-
 <body>
-
     <nav class="nav">
-
         <a href="{{ url_for('index') }}"
            class="nav-brand">
-
             Studio 02
-
         </a>
-
         <ul class="nav-links">
-
             <li>
                 <a href="{{ url_for('index') }}">
                     Inicio
                 </a>
             </li>
-
             <li>
                 <a class="active">
                     Historial
                 </a>
             </li>
-
         </ul>
-
         <a href="{{ url_for('logout') }}"
            class="logout-link">
-
             Cerrar sesión
-
         </a>
-
     </nav>
-
     <header class="page-header">
-
         <div class="page-eyebrow">
             Administración
         </div>
-
         <div class="page-header-grid">
-
             <h1 class="page-title">
                 Historial de <em>Reservas</em>
             </h1>
-
             <p class="page-desc">
                 Consulta citas registradas,
                 clientes y servicios.
@@ -92,6 +73,7 @@
                         <th>Servicios</th>
                         <th>Notas</th>
                         <th>Estado</th>
+                        <th>Acciones</th>
 
                     </tr>
 
@@ -148,6 +130,35 @@
 
                             </span>
 
+                        </td>
+
+                        <td>
+                            <div class="actions-cell">
+                                {% if cita.estado.value != 'cancelada' and cita.estado.value != 'completada' and cita.estado.value != 'no_asistio' %}
+                                    <a href="{{ url_for('editar_cita', id_cita=cita.id_cita) }}" class="btn-action btn-edit">
+                                        Editar
+                                    </a>
+                                    {% if cita.estado.value == 'agendada' %}
+                                        <form method="POST" action="{{ url_for('completar_cita', id_cita=cita.id_cita) }}" style="display:inline;">
+                                            <button type="submit" class="btn-action btn-edit" onclick="return confirm('¿Marcar esta cita como completada?')">
+                                                Completar
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="{{ url_for('marcar_no_asistio', id_cita=cita.id_cita) }}" style="display:inline;">
+                                            <button type="submit" class="btn-action btn-cancel" onclick="return confirm('¿Marcar esta cita como no asistió?')">
+                                                No asistió
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                    <form method="POST" action="{{ url_for('cancelar_cita', id_cita=cita.id_cita) }}" style="display:inline;">
+                                        <button type="submit" class="btn-action btn-cancel" onclick="return confirm('¿Estás seguro de que deseas cancelar esta cita?')">
+                                            Cancelar
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <span class="no-actions">—</span>
+                                {% endif %}
+                            </div>
                         </td>
 
                     </tr>

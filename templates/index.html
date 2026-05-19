@@ -38,8 +38,8 @@
             hechos <em>a tu medida.</em>
         </h1>
         <p class="hero-body">
-            Una sola profesional, toda su atención. Agenda, recibe recordatorios y
-            vive un momento pensado para ti — sin prisas, sin distracciones.
+            Una sola profesional, toda su atención, agenda y
+            vive un momento pensado para ti sin prisas.
         </p>
         <div class="hero-actions">
             <a href="{{ url_for('calendario') }}" class="btn-primary">Agendar Cita →</a>
@@ -47,7 +47,7 @@
         </div>
     </div>
     <div class="hero-image">
-        <img src="{{ url_for('static', filename='img/hero.jpg') }}" alt="Studio 02 interior">
+        <img src="{{ url_for('static', filename='img/studio02.avif') }}" alt="Studio 02 interior">
     </div>
 </section>
 
@@ -60,28 +60,28 @@
     </div>
     <div class="services-grid">
         <a href="{{ url_for('servicios') }}" class="service-tile">
-            <img src="{{ url_for('static', filename='img/hombre-facial.jpg') }}" alt="Facial">
+            <img src="{{ url_for('static', filename='img/facial.avif') }}" alt="Facial">
             <div class="service-tile-label">
                 <span class="service-tile-eyebrow">Cuidado de piel</span>
                 <span class="service-tile-name">Facial</span>
             </div>
         </a>
         <a href="{{ url_for('servicios') }}" class="service-tile">
-            <img src="{{ url_for('static', filename='img/corte-dama.svg') }}" alt="Cabello">
+            <img src="{{ url_for('static', filename='img/corte-dama.avif') }}" alt="Cabello">
             <div class="service-tile-label">
                 <span class="service-tile-eyebrow">Corte y color</span>
                 <span class="service-tile-name">Cabello</span>
             </div>
         </a>
         <a href="{{ url_for('servicios') }}" class="service-tile">
-            <img src="{{ url_for('static', filename='img/mujer-unas.jpg') }}" alt="Manicura">
+            <img src="{{ url_for('static', filename='img/nails.avif') }}" alt="Manicura">
             <div class="service-tile-label">
                 <span class="service-tile-eyebrow">Manos y uñas</span>
                 <span class="service-tile-name">Manicura</span>
             </div>
         </a>
         <a href="{{ url_for('servicios') }}" class="service-tile">
-            <img src="{{ url_for('static', filename='img/colorimetria.png') }}" alt="Maquillaje">
+            <img src="{{ url_for('static', filename='img/maquillaje.avif') }}" alt="Maquillaje">
             <div class="service-tile-label">
                 <span class="service-tile-eyebrow">Expresión</span>
                 <span class="service-tile-name">Maquillaje</span>
@@ -93,15 +93,15 @@
 <!-- SOBRE EL STUDIO -->
 <section class="about">
     <div class="about-image">
-        <img src="{{ url_for('static', filename='img/mujer-tratamiento.jpg') }}" alt="Sobre el Studio">
+        <img src="{{ url_for('static', filename='img/nails.avif') }}" alt="Sobre el Studio">
     </div>
     <div class="about-text">
         <p class="section-eyebrow">Sobre el Studio</p>
         <h2 class="about-title">Un espacio íntimo,<br>pensado para ti.</h2>
         <p class="about-body">
-            Studio 02 nace de la idea de que la belleza no necesita multitudes. Aquí
+            Aquí
             atiendo una cita a la vez, con tiempo suficiente para cada detalle. Desde el
-            corte más clásico hasta tratamientos faciales de autor — cada servicio se
+            corte más clásico hasta tratamientos faciales, cada servicio se
             realiza con productos seleccionados y con toda la intención puesta en ti.
         </p>
         <a href="{{ url_for('calendario') }}" class="btn-outline">Reservar mi Cita</a>
